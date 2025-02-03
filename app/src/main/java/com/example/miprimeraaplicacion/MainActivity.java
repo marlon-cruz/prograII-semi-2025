@@ -6,6 +6,7 @@ import android.widget.Button;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -29,37 +30,45 @@ public class MainActivity extends AppCompatActivity {
                 double num2 = Double.parseDouble(tempVal.getText().toString());
 
                 double respuesta = 0.0;
-
+                String msg = "";
                 spn = findViewById(R.id.spnOpciones);
                 switch (spn.getSelectedItemPosition()){
                     case 0:
                         respuesta = num1 + num2;
+                        msg = "La suma es: "+ respuesta;
                         break;
                     case 1:
                         respuesta = num1 - num2;
+                        msg = "La resta es: "+ respuesta;
                         break;
                     case 2:
                         respuesta = num1 * num2;
+                        msg = "La multiplicación es: "+ respuesta;
                         break;
                     case 3:
                         respuesta = num1 / num2;
+                        msg = "La divicion es: "+ respuesta;
                         break;
                     case 4:
                         respuesta = Math.pow(num1, num2);
+                        msg = "La potencia es: "+ respuesta;
                         break;
                     case 5:
                         respuesta = (num1 / num2) * 100;
+                        msg = "El porcentaje es: "+ respuesta;
                         break;
                     case 6:
                         respuesta = calcularRaiz(num1,num2);
+                        msg = "La raiz es: "+ respuesta;
                         break;
                     case 7:
                         respuesta = factorial((int)num1);
-
+                        msg = "El factorial es: "+ respuesta;
                         break;
                 }
                 tempVal = findViewById(R.id.lblRespuesta);
                 tempVal.setText("Respuesta: "+ respuesta);
+                Toast.makeText(MainActivity.this, msg, Toast.LENGTH_LONG).show();
             }
         });
 
