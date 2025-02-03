@@ -1,4 +1,18 @@
 <resources>
     <string name="app_name">miPrimeraAplicacion</string>
     <string name="hola">Hola mundo</string>
+    <string name="calcular">Calcular</string>
+    <string name="respuesta">Respuesta: ?</string>
+    <string name="ej_4_8">ej. 4.8</string>
+    <string name="num_2">Num 2:</string>
+    <string name="ej_5">ej. 5</string>
+    <string name="num_1">Num 1:</string>
+    <string name="suma">Suma</string>
+    <string name="multiplicaicon">Multiplicaicon</string>
+    <string name="resta">Resta</string>
+    <string name="divicion">Divicion</string>
+    <string name="potencia">Potencia</string>
+    <string name="Porcentaje">Porcentaje</string>
+    <string name="Raiz_cuadrada">Raiz</string>
+    <string name="Factorial">Factorial</string>
 </resources>
