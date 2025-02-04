@@ -12,54 +12,105 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
-    TabHost tbh;
     Button btn;
     TextView tempVal;
     Spinner spn;
-    conversores objConversores = new conversores();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        tbh = findViewById(R.id.tbhConversor);
-        tbh.setup();
-
-        tbh.addTab(tbh.newTabSpec("Monedas").setContent(R.id.tabMonedas).setIndicator("MONEDAS", null));
-        tbh.addTab(tbh.newTabSpec("Longitud").setContent(R.id.tabLongitud).setIndicator("LONGITUD", null));
-        tbh.addTab(tbh.newTabSpec("Tiempo").setContent(R.id.tabTiempo).setIndicator("TIEMPO", null));
-        tbh.addTab(tbh.newTabSpec("Almacenamiento").setContent(R.id.tabAlmacenamiento).setIndicator("ALMACENAMIENTO", null));
-
         btn = findViewById(R.id.btnCalcular);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int opcion = tbh.getCurrentTab();
+                tempVal = findViewById(R.id.txtNum1);
+                double num1 = 0;
+                if (tempVal.getText().toString().isEmpty()){
+                    num1 = 0;
+                }else {
+                    num1 = Double.parseDouble(tempVal.getText().toString());
+                }
+                tempVal = findViewById(R.id.txtNum2);
+                double num2 = 0;
+                double respuesta = 0;
+                if (tempVal.getText().toString().isEmpty()){
+                    num2 = 0;
+                }else {
+                    num2 = Double.parseDouble(tempVal.getText().toString());
+                }
+                String msg = "";
 
-                spn = findViewById(R.id.spnDeMonedas);
-                int de = spn.getSelectedItemPosition();
+                spn = findViewById(R.id.spnOpciones);
+                switch (spn.getSelectedItemPosition()){
+                    case 0:
+                        respuesta = num1 + num2;
+                        msg = "La suma es " + respuesta;
+                        break;
+                    case 1:
+                        respuesta = num1 - num2;
+                        msg = "La resta es " + respuesta;
+                        break;
+                    case 2:
+                        respuesta = num1 * num2;
+                        msg = "La multiplicacion es " + respuesta;
+                        break;
+                    case 3:
+                        respuesta = num1 / num2;
+                        msg = "La divicion es " + respuesta;
+                        break;
+                    case 4:
+                        respuesta = Math.pow(num1, num2);
+                        msg = "La potencia es " + respuesta;
+                        break;
+                    case 5:
+                        respuesta = (num1 * num2) / 100;
+                        msg = "El resultado del porcentaje es " + respuesta;
+                        break;
+                    case 6:
+                        respuesta = calcularRaiz(num1,num2);
+                        msg = "La raiz es " + respuesta;
+                        break;
+                    case 7:
+                        respuesta = factorial((int)num1);
+                        msg = "El factorial es " + respuesta;
+                        break;
+                    case 8:
+                        respuesta = num1 % num2;
+                        msg = "El modulo es " + respuesta;
+                        break;
+                    case 9:
+                        if (num1 > num2){
+                            respuesta = num1;
+                        }else {
+                            respuesta = num2;
+                        }
+                        msg = "La mayor es " + respuesta;
+                        break;
 
-                spn = findViewById(R.id.spnAMonedas);
-                int a = spn.getSelectedItemPosition();
-
-                tempVal = findViewById(R.id.txtCantidad);
-                double cantidad = Double.parseDouble(tempVal.getText().toString());
-
+                }
                 tempVal = findViewById(R.id.lblRespuesta);
-                double respuesta = objConversores.convertir(opcion, de, a, cantidad);
                 tempVal.setText("Respuesta: "+ respuesta);
+                Toast.makeText(MainActivity.this, msg + respuesta, Toast.LENGTH_LONG).show();
+
             }
         });
+
     }
-}
-class conversores{
-    double[][] valores= {
-            {1,0.98, 7.73, 25.45, 36.78, 508.87, 8.74},//monedas
-            {},//Longitud
-            {},//tiempo
-            {},//Almacenamiento
-    };
-    public double convertir(int opcion, int de, int a, double cantidad){
-        return valores[opcion][a] / valores[opcion][de] * cantidad;
+
+    public static int factorial(int num) {
+        int resultado = 1;
+        for (int i = 2; i <= num; i++) {
+            resultado *= i;
+        }
+        return resultado;
     }
+
+    public static double calcularRaiz(double numero, double indice) {
+        if (numero < 0 && indice % 2 == 0) {
+            return 0.0;
+        }
+        return Math.pow(numero, 1.0 / indice);
+    }
+
 }
