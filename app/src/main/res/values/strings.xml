@@ -1,16 +1,71 @@
 <resources>
     <string name="app_name">miPrimeraAplicacion</string>
-    <string-array name="opciones">
-        <item>Suma</item>
-        <item>Resta</item>
-        <item>Multiplicacion</item>
-        <item>Divicion</item>
-        <item>potencia</item>
-        <item>Porcentaje</item>
-        <item>Raiz</item>
-        <item>factorial</item>
-        <item>Modulo</item>
-        <item>Numero mayor</item>
+    <string-array name="monedas">
+        <!--POR DEFINIR-->
+        <item>Dolar</item>
+        <item>Euro</item>
+        <item>Quetzalez</item>
+        <item>Lempiras</item>
+        <item>Cordobas</item>
+        <item>Colon CR</item>
+        <item>Colon SV</item>
+    </string-array>
+
+    <string-array name="masa">
+
+        <item>kilogramo</item>
+        <item>Gramo</item>
+        <item>Miligramo</item>
+        <item>Tonelada</item>
+        <item>Onza</item>
+        <item>Libra</item>
+        <item>Quintal</item>
+        <item>Hectogramo</item>
+        <item>Decagramo</item>
+        <item>Decigramo</item>
+    </string-array>
+
+    <string-array name="volumen">
+        <item>metro cubico</item>
+         <item>Kilómetro cúbico (km³)</item>
+         <item>Hectómetro cúbico (hm³)</item>
+         <item>Decámetro cúbico (dam³)</item>
+         <item>Decímetro cúbico (dm³)</item>
+         <item>Cuarto (qt)(EE. UU.)</item>
+         <item>Galón (gal) </item>
+         <item>Barril (bbl)</item>
+         <item>Pie cúbico (ft³)</item>
+         <item>Pulgada cúbica (in³)</item>
+
 
     </string-array>
+
+    <string-array name="longitud">
+        <item>Metro</item>
+        <item>Kilómetro</item>
+        <item>Centímetro</item>
+        <item>Milímetro</item>
+        <item>Pulgada</item>
+        <item>Pie</item>
+        <item>Yarda</item>
+       <item>Milla</item>
+        <item>Micrómetro</item>
+        <item>Nanómetro</item>
+    </string-array>
+
+    <string-array name="almacenamiento">
+        <!--POR DEFINIR-->
+        <item>POR DEFINIR5</item>
+    </string-array>
+
+    <string-array name="tiempo">
+        <!--POR DEFINIR-->
+        <item>POR DEFINIR6</item>
+    </string-array>
+
+    <string-array name="transferencia">
+        <!--POR DEFINIR-->
+        <item>POR DEFINIR7</item>
+    </string-array>
+
 </resources>
