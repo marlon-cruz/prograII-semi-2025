@@ -109,9 +109,10 @@ import java.math.RoundingMode;
                     }
 
                     tempVal = findViewById(R.id.txtCantidad);
-                    if(tempVal.getText().toString().isEmpty()){
+                    if(tempVal.getText().toString().isEmpty() || tempVal.getText().toString().matches("[a-zA-Z]+")){
                         double cantidad = 0;
-                        msg = "La cantidad que ingresaste no es valida";
+                        msg = "El valor que ingresaste no es valida";
+                        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_LONG).show();
                     }
                     else{
                         double cantidad = Double.parseDouble(tempVal.getText().toString());
@@ -119,11 +120,13 @@ import java.math.RoundingMode;
 
                         BigDecimal respuesta = objConversores.convertir(opcion, de, a, cantidad);
 
-                       // respuesta = respuesta.setScale(2, RoundingMode.HALF_UP);
-                        tempVal.setText("Respuesta: "+ respuesta);
                         msg = "El resultado de combertir " + cantidad + TextDe + " a " + TextA + " : ";
 
                         Toast.makeText(MainActivity.this, msg + respuesta, Toast.LENGTH_LONG).show();
+
+                        respuesta = respuesta.setScale(2, RoundingMode.HALF_UP);
+                        tempVal.setText("Respuesta: "+ respuesta);
+
                     }
 
                 }
