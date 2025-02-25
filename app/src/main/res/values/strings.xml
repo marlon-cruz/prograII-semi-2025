@@ -1,17 +1,13 @@
 <resources>
     <string name="app_name">miPrimeraAplicacion</string>
-    <string-array name="monedas">
-        <!--POR DEFINIR-->
-        <item>Dolar</item>
-        <item>Euro</item>
-        <item>Libra esterlina</item>
-        <item>Yen japones</item>
-        <item>Dolar canadiense</item>
-        <item>Franco Suizo</item>
-        <item>Dolar Australiano</item>
-        <item>Yuan chino</item>
-        <item>Peso mexicano</item>
-        <item>Real Brasileño</item>
+    <string-array name="area">
+        <item>Manzana</item>
+        <item>Tareas</item>
+        <item>Hectárea</item>
+        <item>Metro Cuadrado</item>
+        <item>Yarda Cuadrada</item>
+        <item>Vara Cuadrada</item>
+        <item> Pie Cuadrado</item>
     </string-array>
 
     <string-array name="masa">

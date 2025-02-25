@@ -7,5 +7,142 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <TabHost
+        android:id="@+id/tbhConversor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <!--Pago de agua-->
+                <RelativeLayout
+                    android:id="@+id/tabPagoAgua"
+                    android:layout_width="match_parent"
+                    android:layout_height="676dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/lblMconsumidos"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="40dp"
+                        android:text="Ingrese los metros que ha consumido"
+                        android:textSize="20dp" />
+
+                    <EditText
+                        android:id="@+id/txtCantidad"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/lblMconsumidos"
+                        android:layout_marginTop="40dp"
+                        android:hint="Metros Consumidos"
+                        />
+
+
+                    <Button
+                        android:id="@+id/btnCalcular"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/txtCantidad"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="40dp"
+                        android:backgroundTint="@color/black"
+                        android:text="Calcular" />
+
+                    <TextView
+                        android:id="@+id/lblRespuesta"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/btnCalcular"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="40dp"
+                        android:textSize="20dp"
+                        android:text="Respuesta: ?" />
+
+                </RelativeLayout>
+                <!--Conversor de Area-->
+                <RelativeLayout
+                    android:id="@+id/tabConversorArea"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/lblDeArea"
+                        android:text="DE: "
+                        android:layout_marginTop="40dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                    <Spinner
+                        android:entries="@array/area"
+                        android:id="@+id/spnDeArea"
+                        android:layout_below="@id/lblDeArea"
+                        android:layout_marginLeft="80dp"
+                        android:layout_marginTop="-20dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                    <TextView
+                        android:id="@+id/lblAArea"
+                        android:text="A: "
+                        android:layout_below="@id/spnDeArea"
+                        android:layout_marginTop="40dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                    <Spinner
+                        android:entries="@array/area"
+                        android:id="@+id/spnAArea"
+                        android:layout_below="@id/spnDeArea"
+                        android:layout_marginLeft="80dp"
+                        android:layout_marginTop="40dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <EditText
+                        android:id="@+id/txtCantidadArea"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/spnAArea"
+                        android:layout_marginTop="88dp"
+                        android:hint="Cantidad" />
+
+                    <Button
+                        android:id="@+id/btnCalcularArea"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/txtCantidadArea"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="60dp"
+                        android:backgroundTint="@color/black"
+                        android:text="Calcular" />
+
+                    <TextView
+                        android:id="@+id/lblRespuestaArea"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/btnCalcularArea"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="50dp"
+                        android:text="Respuesta: ?"
+                        android:textSize="20dp" />
+                </RelativeLayout>
+
+            </FrameLayout>
+        </LinearLayout>
+    </TabHost>
 
 </RelativeLayout>
