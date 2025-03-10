@@ -1,9 +1,9 @@
 package com.example.miprimeraaplicacion;
-
-import android.database.Cursor;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+
 public class DB extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "amigos";
     private static final int DATABASE_VERSION = 1;
@@ -41,11 +41,9 @@ public class DB extends SQLiteOpenHelper {
         } catch (Exception e) {
             return e.getMessage();
         }
-
     }
-    public Cursor listar_amigos() {
+    public Cursor lista_amigos() {
         SQLiteDatabase db = getReadableDatabase();
         return db.rawQuery("SELECT * FROM amigos", null);
     }
-
 }
