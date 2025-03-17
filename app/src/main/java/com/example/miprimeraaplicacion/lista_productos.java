@@ -1,5 +1,7 @@
 package com.example.miprimeraaplicacion;
+
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -14,7 +16,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -79,10 +86,9 @@ public class lista_productos extends Activity {
                 parametros.putString("productos", jsonArray.getJSONObject(posicion).toString());
                 abriVentana();
             }else if (item.getItemId() == R.id.mnxEliminar){
-                //Eliminar amigo
                 parametros.putString("accion","eliminar");
                 parametros.putString("productos", jsonArray.getJSONObject(posicion).toString());
-                //guardarProducto();
+                eliminarProducto();
             }
             return true;
         }catch (Exception e){
@@ -92,7 +98,33 @@ public class lista_productos extends Activity {
 
     }
 
-
+    private void eliminarProducto(){
+        try{
+            String nombre = jsonArray.getJSONObject(posicion).getString("codigo");
+            AlertDialog.Builder confirmacion = new AlertDialog.Builder(this);
+            confirmacion.setTitle("Esta seguro de eliminar a: ");
+            confirmacion.setMessage(nombre);
+            confirmacion.setPositiveButton("Si", (dialog, which) -> {
+                try {
+                    String respuesta = db.administrar_productos("eliminar", new String[]{jsonArray.getJSONObject(posicion).getString("idProducto")});
+                    if(respuesta.equals("ok")) {
+                        obtenerDatosProductos();
+                        mostrarMsg("Registro eliminado con exito");
+                    }else{
+                        mostrarMsg("Error: " + respuesta);
+                    }
+                }catch (Exception e){
+                    mostrarMsg("Error: " + e.getMessage());
+                }
+            });
+            confirmacion.setNegativeButton("No", (dialog, which) -> {
+                dialog.dismiss();
+            });
+            confirmacion.create().show();
+        }catch (Exception e){
+            mostrarMsg("Error: " + e.getMessage());
+        }
+    }
     //Abre la ventana de amigos
     private void abriVentana(){
         Intent intent = new Intent(this, MainActivity.class);
@@ -201,4 +233,6 @@ public class lista_productos extends Activity {
     private void mostrarMsg(String msg){
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
     }
+
+
 }

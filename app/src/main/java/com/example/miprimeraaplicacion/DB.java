@@ -34,7 +34,7 @@ public class DB extends SQLiteOpenHelper {
             //Mensaje y consultas
             String mensaje = "ok", sql = "";
             switch (accion) {
-                case "agregar":
+                case "nuevo":
                     sql = "INSERT INTO productos (codigo, descripcion, marca, presentacion, precio, urlFoto) VALUES ('"+ datos[1] +"', '" + datos[2] + "', '" + datos[3] + "', '" + datos[4] + "', '" + datos[5] + "', '" + datos[6] + "')";
                     break;
                 case "modificar":
