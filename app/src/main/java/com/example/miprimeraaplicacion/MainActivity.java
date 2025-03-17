@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
             //Recuperamos los parametros que vienen para modificar
             Bundle parametros = getIntent().getExtras();
             accion = parametros.getString("accion");
-            mostrarMsg(accion + " es lo que se hace");
+
 
             if (accion.equals("modificar")) {
                 //Recuperamos los datos del amigo
@@ -82,7 +82,12 @@ public class MainActivity extends AppCompatActivity {
 
 
                 tempVal = findViewById(R.id.txtPrecio);
-                tempVal.setText(datos.getString("precio")  + "Es el precio");
+                tempVal.setText(datos.getString("precio"));
+
+                urlCompletaFoto = datos.getString("foto");
+                Bitmap bitmap = BitmapFactory.decodeFile(urlCompletaFoto);
+                img.setImageBitmap(bitmap);
+
 
             }
 
@@ -103,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
                     tomarFotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, uriFotoAimgo);
                     startActivityForResult(tomarFotoIntent, 1);
                 } else {
-                    mostrarMsg("Nose pudo crear la imagen.");
+                    mostrarMsg("No se pudo crear la imagen.");
                 }
             } catch (Exception e) {
                 mostrarMsg("Error: " + e.getMessage());
