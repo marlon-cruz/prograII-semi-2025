@@ -1,5 +1,8 @@
 package com.example.miprimeraaplicacion;
 
+
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -14,10 +17,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -25,8 +30,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-
-public class lista_amigos extends AppCompatActivity {
+public class lista_amigos extends Activity {
 
     Bundle parametros = new Bundle();
     ListView ltsAmigos;
@@ -39,21 +43,21 @@ public class lista_amigos extends AppCompatActivity {
     amigos misAmigos;
     FloatingActionButton fab;
     int posicion = 0;
+    obtenerDatosServidor datosServidor;
+    detectarInternet di;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_amigos);
-        parametros.putString("accion","nuevo");
 
+        parametros.putString("accion", "nuevo");
         db = new DB(this);
 
         fab = findViewById(R.id.fabAgregarAmigo);
         fab.setOnClickListener(view -> abriVentana());
-        obtenerDatosAmigos();
+        listarDatos();
         buscarAmigos();
     }
-
-    //Metodos agregados
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
@@ -67,46 +71,77 @@ public class lista_amigos extends AppCompatActivity {
             mostrarMsg("Error: " + e.getMessage());
         }
     }
-    //Metodos agregados
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
-
         try{
-            //Si el item seleccionado es igual a nuevo, se abre la ventana agregar amigo
-            if(item.getItemId() == R.id.mxnNuevo){
+            if( item.getItemId()==R.id.mxnNuevo){
                 abriVentana();
-                //Si el item seleccionado es igual a Modificar
-            }else if (item.getItemId() == R.id.mnxModificar){
-                parametros.putString("accion","modificar");
+            }else if( item.getItemId()==R.id.mnxModificar){
+                parametros.putString("accion", "modificar");
                 parametros.putString("amigos", jsonArray.getJSONObject(posicion).toString());
                 abriVentana();
-            }else if (item.getItemId() == R.id.mnxEliminar){
-                //Eliminar amigo
+            } else if (item.getItemId()==R.id.mnxEliminar) {
+                eliminarAmigo();
             }
             return true;
         }catch (Exception e){
             mostrarMsg("Error: " + e.getMessage());
             return super.onContextItemSelected(item);
         }
-
     }
-
-
-    //Abre la ventana de amigos
+    private void eliminarAmigo(){
+        try{
+            String nombre = jsonArray.getJSONObject(posicion).getString("nombre");
+            AlertDialog.Builder confirmacion = new AlertDialog.Builder(this);
+            confirmacion.setTitle("Esta seguro de eliminar a: ");
+            confirmacion.setMessage(nombre);
+            confirmacion.setPositiveButton("Si", (dialog, which) -> {
+                try {
+                    String respuesta = db.administrar_amigos("eliminar", new String[]{jsonArray.getJSONObject(posicion).getString("idAmigo")});
+                    if(respuesta.equals("ok")) {
+                        obtenerDatosAmigos();
+                        mostrarMsg("Registro eliminado con exito");
+                    }else{
+                        mostrarMsg("Error: " + respuesta);
+                    }
+                }catch (Exception e){
+                    mostrarMsg("Error: " + e.getMessage());
+                }
+            });
+            confirmacion.setNegativeButton("No", (dialog, which) -> {
+                dialog.dismiss();
+            });
+            confirmacion.create().show();
+        }catch (Exception e){
+            mostrarMsg("Error: " + e.getMessage());
+        }
+    }
     private void abriVentana(){
         Intent intent = new Intent(this, MainActivity.class);
-        //Se envian los parametros a la ventana de amigos
         intent.putExtras(parametros);
         startActivity(intent);
     }
-
-    //Obtiene los datos de los amigos
+    private void listarDatos(){
+        try{
+            di = new detectarInternet(this);
+            if(di.hayConexionInternet()){//online
+                datosServidor = new obtenerDatosServidor();
+                String respuesta = datosServidor.execute().get();
+                jsonObject = new JSONObject(respuesta);
+                jsonArray = jsonObject.getJSONArray("rows");
+                mostrarDatosAmigos();
+            }else{//offline
+                obtenerDatosAmigos();
+            }
+        }catch (Exception e){
+            mostrarMsg("Error: " + e.getMessage());
+        }
+    }
     private void obtenerDatosAmigos(){
         try{
             cAmigos = db.lista_amigos();
-            //Si hay datos en la tabla
-            if(cAmigos.moveToFirst()){//move to first es para moverse entre los datos
-                jsonArray = new JSONArray();//Array de objetos se pasan a un JSON
+            if(cAmigos.moveToFirst()){
+                jsonArray = new JSONArray();
                 do{
                     jsonObject = new JSONObject();
                     jsonObject.put("idAmigo", cAmigos.getString(0));
@@ -127,7 +162,6 @@ public class lista_amigos extends AppCompatActivity {
             mostrarMsg("Error: " + e.getMessage());
         }
     }
-    //Muestra los datos de los amigos
     private void mostrarDatosAmigos(){
         try{
             if(jsonArray.length()>0){
@@ -136,7 +170,7 @@ public class lista_amigos extends AppCompatActivity {
                 alAmigosCopia.clear();
 
                 for (int i=0; i<jsonArray.length(); i++){
-                    jsonObject = jsonArray.getJSONObject(i);
+                    jsonObject = jsonArray.getJSONObject(i).getJSONObject("value");
                     misAmigos = new amigos(
                             jsonObject.getString("idAmigo"),
                             jsonObject.getString("nombre"),
@@ -159,17 +193,13 @@ public class lista_amigos extends AppCompatActivity {
             mostrarMsg("Error: " + e.getMessage());
         }
     }
-    //Busca los amigos
     private void buscarAmigos(){
         TextView tempVal = findViewById(R.id.txtBuscarAmigos);
         tempVal.addTextChangedListener(new TextWatcher() {
-            //TexWatcher
-            //Antes
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
             }
-            //Durante
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 alAmigos.clear();
@@ -178,19 +208,15 @@ public class lista_amigos extends AppCompatActivity {
                     alAmigos.addAll(alAmigosCopia);
                 }else{
                     for (amigos item: alAmigosCopia){
-                        //item.get obtiene el valor de la posicion del array, toLowerCase convierte el valor a minusculas
-                        //contains verifica si el valor contiene la cadena de texto
                         if(item.getNombre().toLowerCase().contains(buscar) ||
                                 item.getDui().toLowerCase().contains(buscar) ||
                                 item.getEmail().toLowerCase().contains(buscar)){
-                            //Si cumple la condicion se agrega al array
                             alAmigos.add(item);
                         }
                     }
                     ltsAmigos.setAdapter(new AdaptadorAmigos(getApplicationContext(), alAmigos));
                 }
             }
-            //Despues
             @Override
             public void afterTextChanged(Editable s) {
 
