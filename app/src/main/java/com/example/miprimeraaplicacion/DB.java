@@ -6,16 +6,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class DB extends SQLiteOpenHelper {
-
     private static final String DATABASE_NAME = "amigos";
     private static final int DATABASE_VERSION = 1;
-
-    private static final String SQLdb = "CREATE TABLE amigos (idAmigo INTEGER PRIMARY KEY AUTOINCREMENT, nombre TEXT, direccion TEXT, telefono TEXT, email TEXT, dui TEXT, urlFoto TEXT)";
-
+    private static final String SQLdb = "CREATE TABLE amigos (idAmigo TEXT, nombre TEXT, direccion TEXT, telefono TEXT, email TEXT, dui TEXT, urlFoto TEXT)";
     public DB(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
-
 
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -25,15 +21,12 @@ public class DB extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         //Actualizar la estrucutra de la base de datos si es necesario
     }
-
     public String administrar_amigos(String accion, String[] datos) {
         try{
-
             SQLiteDatabase db = getWritableDatabase();
-
             String mensaje = "ok", sql = "";
             switch (accion) {
-                case "agregar":
+                case "nuevo":
                     sql = "INSERT INTO amigos (nombre, direccion, telefono, email, dui, urlFoto) VALUES ('"+ datos[1] +"', '" + datos[2] + "', '" + datos[3] + "', '" + datos[4] + "', '" + datos[5] + "', '" + datos[6] + "')";
                     break;
                 case "modificar":
@@ -46,14 +39,11 @@ public class DB extends SQLiteOpenHelper {
             db.execSQL(sql);
             db.close();
             return mensaje;
-
         } catch (Exception e) {
             return e.getMessage();
         }
-
     }
-    public Cursor lista_amigos(){
-
+    public Cursor lista_amigos() {
         SQLiteDatabase db = getReadableDatabase();
         return db.rawQuery("SELECT * FROM amigos", null);
     }
