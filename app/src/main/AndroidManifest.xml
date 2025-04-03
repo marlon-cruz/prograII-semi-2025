@@ -34,7 +34,7 @@
             </intent-filter>
         </activity>
         <provider
-            android:authorities="com.ugb.miprimeraaplicacion.fileprovider"
+            android:authorities="com.example.miprimeraaplicacion.fileprovider"
             android:name="androidx.core.content.FileProvider"
             android:exported="false"
             android:grantUriPermissions="true">
