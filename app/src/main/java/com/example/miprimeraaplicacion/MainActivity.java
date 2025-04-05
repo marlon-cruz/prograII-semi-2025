@@ -2,15 +2,10 @@ package com.example.miprimeraaplicacion;
 
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -33,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     Button btn;
     TextView tempVal;
     DB db;
-    String accion = "nuevo", idAmigo = "", id="", rev="";
+    String accion = "nuevo", idProducto = "", id="", rev="";
     ImageView img;
     String urlCompletaFoto = "";
     Intent tomarFotoIntent;
@@ -45,12 +40,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         utls = new utilidades();
-        img = findViewById(R.id.imgFotoAmigo);
+        img = findViewById(R.id.imgFotoProducto);
         db = new DB(this);
-        btn = findViewById(R.id.btnGuardarAmigo);
+        btn = findViewById(R.id.btnGuardarProducto);
         btn.setOnClickListener(view->guardarAmigo());
 
-        fab = findViewById(R.id.fabListaAmigos);
+        fab = findViewById(R.id.fabListaProductos);
         fab.setOnClickListener(view->abrirVentana());
 
         mostrarDatos();
@@ -60,31 +55,38 @@ public class MainActivity extends AppCompatActivity {
         try {
             Bundle parametros = getIntent().getExtras();
             accion = parametros.getString("accion");
+
             if (accion.equals("modificar")) {
-                JSONObject datos = new JSONObject(parametros.getString("amigos"));
-                id = datos.getString("_id");
-                rev = datos.getString("_rev");
-                idAmigo = datos.getString("idAmigo");
+                JSONObject datos = new JSONObject(parametros.getString("productos"));
+                di = new detectarInternet(this);
+                if (di.hayConexionInternet()){
+                    id = datos.getString("_id");
+                    rev = datos.getString("_rev");
+                }
 
-                tempVal = findViewById(R.id.txtNombre);
-                tempVal.setText(datos.getString("nombre"));
 
-                tempVal = findViewById(R.id.txtDireccion);
-                tempVal.setText(datos.getString("direccion"));
 
-                tempVal = findViewById(R.id.txtTelefono);
-                tempVal.setText(datos.getString("telefono"));
+                idProducto = datos.getString("idProducto");
 
-                tempVal = findViewById(R.id.txtEmail);
-                tempVal.setText(datos.getString("email"));
+                tempVal = findViewById(R.id.txtCodigo);
+                tempVal.setText(datos.getString("codigo"));
 
-                tempVal = findViewById(R.id.txtDui);
-                tempVal.setText(datos.getString("dui"));
+                tempVal = findViewById(R.id.txtDescripcion);
+                tempVal.setText(datos.getString("descripcion"));
 
-                urlCompletaFoto = datos.getString("urlFoto");
+                tempVal = findViewById(R.id.txtMarca);
+                tempVal.setText(datos.getString("marca"));
+
+                tempVal = findViewById(R.id.txtPresentacion);
+                tempVal.setText(datos.getString("presentacion"));
+
+                tempVal = findViewById(R.id.txtPrecio);
+                tempVal.setText(datos.getString("precio"));
+
+                urlCompletaFoto = datos.getString("foto");
                 img.setImageURI(Uri.parse(urlCompletaFoto));
             }else {
-                idAmigo = utls.generarUnicoId();
+                idProducto = utls.generarUnicoId();
             }
         }catch (Exception e){
             mostrarMsg("Error: "+e.getMessage());
@@ -140,43 +142,51 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
     }
     private void abrirVentana(){
-        Intent intent = new Intent(this, lista_amigos.class);
+        Intent intent = new Intent(this, lista_productos.class);
         startActivity(intent);
     }
     private void guardarAmigo() {
         try {
-            tempVal = findViewById(R.id.txtNombre);
-            String nombre = tempVal.getText().toString();
+            tempVal = findViewById(R.id.txtCodigo);
+            String codigo = tempVal.getText().toString();
 
-            tempVal = findViewById(R.id.txtDireccion);
-            String direccion = tempVal.getText().toString();
+            tempVal = findViewById(R.id.txtDescripcion);
+            String descripcion = tempVal.getText().toString();
 
-            tempVal = findViewById(R.id.txtTelefono);
-            String telefono = tempVal.getText().toString();
-            tempVal = findViewById(R.id.txtEmail);
-            String email = tempVal.getText().toString();
+            tempVal = findViewById(R.id.txtMarca);
+            String marca = tempVal.getText().toString();
+            tempVal = findViewById(R.id.txtPresentacion);
+            String presentacion = tempVal.getText().toString();
 
-            tempVal = findViewById(R.id.txtDui);
-            String dui = tempVal.getText().toString();
+            tempVal = findViewById(R.id.txtPrecio);
+            String precio = tempVal.getText().toString();
 
-            JSONObject datosAmigos = new JSONObject();
-            if (accion.equals("modificar")) {
-                datosAmigos.put("_id", id);
-                datosAmigos.put("_rev", rev);
+            JSONObject datosProductos = new JSONObject();
+
+            di = new detectarInternet(this);
+
+            if (di.hayConexionInternet()){
+                if (accion.equals("modificar")) {
+                    datosProductos.put("_id", id);
+                    datosProductos.put("_rev", rev);
+                }
             }
-            datosAmigos.put("idAmigo", idAmigo);
-            datosAmigos.put("nombre", nombre);
-            datosAmigos.put("direccion", direccion);
-            datosAmigos.put("telefono", telefono);
-            datosAmigos.put("email", email);
-            datosAmigos.put("dui", dui);
-            datosAmigos.put("urlFoto", urlCompletaFoto);
+
+
+
+            datosProductos.put("idProducto", idProducto);
+            datosProductos.put("codigo", codigo);
+            datosProductos.put("descripcion", descripcion);
+            datosProductos.put("marca", marca);
+            datosProductos.put("presentacion", presentacion);
+            datosProductos.put("precio", precio);
+            datosProductos.put("foto", urlCompletaFoto);
 
             di = new detectarInternet(this);
             if(di.hayConexionInternet()) {//online
                 //enviar los datos al servidor
                 enviarDatosServidor objEnviarDatos = new enviarDatosServidor(this);
-                String respuesta = objEnviarDatos.execute(datosAmigos.toString(), "POST", utilidades.url_mto).get();
+                String respuesta = objEnviarDatos.execute(datosProductos.toString(), "POST", utilidades.url_mto).get();
 
                 JSONObject respuestaJSON = new JSONObject(respuesta);
                 if(respuestaJSON.getBoolean("ok")){
@@ -186,9 +196,10 @@ public class MainActivity extends AppCompatActivity {
                     mostrarMsg("Error: "+respuestaJSON.getString("msg"));
                 }
             }
-            String[] datos = {idAmigo, nombre, direccion, telefono, email, dui, urlCompletaFoto};
-            db.administrar_amigos(accion, datos);
-            Toast.makeText(getApplicationContext(), "Registro guardado con exito.", Toast.LENGTH_LONG).show();
+            String[] datos = {idProducto, codigo, descripcion, marca, presentacion, precio, urlCompletaFoto};
+           String respuesta = db.administrar_productos(accion, datos);
+
+            Toast.makeText(getApplicationContext(), "estado de registro ." + respuesta, Toast.LENGTH_LONG).show();
             abrirVentana();
         }catch (Exception e){
             mostrarMsg("Error: "+e.getMessage());

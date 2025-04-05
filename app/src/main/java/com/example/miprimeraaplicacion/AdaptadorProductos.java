@@ -12,13 +12,13 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class AdaptadorAmigos extends BaseAdapter {
+public class AdaptadorProductos extends BaseAdapter {
     Context context;
-    ArrayList<amigos> alAmigos;
-    amigos misAmigos;
+    ArrayList<productos> alAmigos;
+    productos misProductos;
     LayoutInflater inflater;
 
-    public AdaptadorAmigos(Context context, ArrayList<amigos> alAmigos) {
+    public AdaptadorProductos(Context context, ArrayList<productos> alAmigos) {
         this.context = context;
         this.alAmigos = alAmigos;
     }
@@ -43,19 +43,25 @@ public class AdaptadorAmigos extends BaseAdapter {
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View itemView = inflater.inflate(R.layout.fotos, parent, false);
         try {
-            misAmigos = alAmigos.get(position);
+            misProductos = alAmigos.get(position);
 
-            TextView tempVal = itemView.findViewById(R.id.lblNombreAdaptador);
-            tempVal.setText(misAmigos.getNombre());
+            TextView tempVal = itemView.findViewById(R.id.lblcodigoAdaptador);
+            tempVal.setText(misProductos.getcodigo());
 
-            tempVal = itemView.findViewById(R.id.lblTelefonoAdaptador);
-            tempVal.setText(misAmigos.getTelefono());
+            tempVal = itemView.findViewById(R.id.lblDescripcionAdaptador);
+            tempVal.setText(misProductos.getdescripcion());
 
-            tempVal = itemView.findViewById(R.id.lblEmailAdaptador);
-            tempVal.setText(misAmigos.getEmail());
+            tempVal = itemView.findViewById(R.id.lblMarcaAdaptador);
+            tempVal.setText(misProductos.getmarca());
+
+            tempVal = itemView.findViewById(R.id.lblPrecioAdaptador);
+            tempVal.setText(misProductos.getprecio());
+
+            tempVal = itemView.findViewById(R.id.lblPresentacionAdaptador);
+            tempVal.setText(misProductos.getpresentacion());
 
             ImageView img = itemView.findViewById(R.id.imgFotoAdaptador);
-            Bitmap bitmap = BitmapFactory.decodeFile(misAmigos.getFoto());
+            Bitmap bitmap = BitmapFactory.decodeFile(misProductos.getFoto());
             img.setImageBitmap(bitmap);
         } catch (Exception e) {
             Toast.makeText(context, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
