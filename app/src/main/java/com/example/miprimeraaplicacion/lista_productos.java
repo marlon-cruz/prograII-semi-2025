@@ -19,19 +19,24 @@ import androidx.annotation.NonNull;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class lista_productos extends Activity {
     Bundle parametros = new Bundle();
     ListView ltsproductos;
     Cursor cproductos;
+    Cursor cproductosAuxiliar;
     DB db;
     final ArrayList<productos> alproductos = new ArrayList<productos>();
     final ArrayList<productos> alProductosCopia = new ArrayList<productos>();
     JSONArray jsonArray;
+    JSONArray jsonArrayAuxiliar;
     JSONObject jsonObject;
+    JSONObject jsonObjectAuxiliar;
     productos misProductos;
     FloatingActionButton fab;
     int posicion = 0;
@@ -48,6 +53,7 @@ public class lista_productos extends Activity {
 
         fab = findViewById(R.id.fabAgregarProductos);
         fab.setOnClickListener(view -> abriVentana());
+        DatosLocalRemoto();
         listarDatos();
         buscarproductos();
     }
@@ -137,6 +143,8 @@ public class lista_productos extends Activity {
                         } else {
                             mostrarMsg("Error:  3" + respuesta);
                         }
+                    }else {
+                        db.administrarActualizados("modificar", "verdadero");
                     }
 
                     String respuesta = db.administrar_productos("eliminar", new String[]{jsonArray.getJSONObject(posicion).getString("idProducto")});
@@ -176,7 +184,22 @@ public class lista_productos extends Activity {
 
                 jsonObject = new JSONObject(respuesta);
                 jsonArray = jsonObject.getJSONArray("rows");
-                mostrarDatosproductos();
+
+                cproductosAuxiliar = db.lista_productosActializados();
+
+                if (cproductosAuxiliar.moveToFirst()) {
+                    jsonArrayAuxiliar = new JSONArray();
+
+                    String falso = "falso";
+
+                    if ( Objects.equals(cproductosAuxiliar.getString(1), falso)) {
+                        mostrarDatosproductos();
+                    }
+
+                }
+
+
+
             } else {//offline
 
                 obtenerDatosproductos();
@@ -205,6 +228,7 @@ public class lista_productos extends Activity {
                 } while (cproductos.moveToNext());
 
 
+
                 mostrarDatosproductos();
             } else {
                 mostrarMsg("No hay productos registrados.");
@@ -224,8 +248,10 @@ public class lista_productos extends Activity {
                 alproductos.clear();
                 alProductosCopia.clear();
                 di = new detectarInternet(this);
+                cproductosAuxiliar = db.lista_productosActializados();
 
                 boolean respuesta = di.hayConexionInternet();
+
                 for (int i = 0; i < jsonArray.length(); i++) {
 
                     if (respuesta){
@@ -293,4 +319,75 @@ public class lista_productos extends Activity {
     private void mostrarMsg(String msg){
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
     }
+    private void DatosLocalRemoto(){
+        try {
+
+            di = new detectarInternet(this);
+            if (di.hayConexionInternet()) {
+                cproductosAuxiliar = db.lista_productosActializados();
+                if (cproductosAuxiliar.moveToFirst()) {
+                    jsonArrayAuxiliar = new JSONArray();
+
+                    String verdadero = "verdadero";
+                    if (Objects.equals(cproductosAuxiliar.getString(1), verdadero)) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                        builder.setTitle("Datos no guardados");
+                        builder.setMessage("¿Reestablecer datos?");
+                        builder.setPositiveButton("Usar datos del dispositivo", (dialogInterface, i) -> datosDispositivo());
+                        builder.setNegativeButton("Usar datos del gurdados", (dialogInterface, i) -> datosNube());
+                        builder.show();
+                    }
+                }
+            }
+        } catch (Exception e) {
+           mostrarMsg("Error: 11" + e.getMessage());
+        }
+
+    }
+    private void datosDispositivo(){
+        try{
+            for (int i = 0; i < jsonArray.length(); i++){
+                JSONObject datosproductos = new JSONObject();
+                String _id = jsonArray.getJSONObject(i).getJSONObject("value").getString("_id");
+                String _rev = jsonArray.getJSONObject(i).getJSONObject("value").getString("_rev");
+                String url = utilidades.url_mto + "/" + _id + "?rev=" + _rev;
+                enviarDatosServidor objEnviarDatosServidor = new enviarDatosServidor(this);
+                String respuesta = objEnviarDatosServidor.execute(datosproductos.toString(), "DELETE", url).get();
+            }
+            obtenerDatosproductos();
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+
+
+                    jsonObject = jsonArray.getJSONObject(i);
+
+                JSONObject datosProductos = new JSONObject();
+
+                datosProductos.put("idProducto", jsonObject.getString("idProducto"));
+                datosProductos.put("codigo", jsonObject.getString("codigo"));
+                datosProductos.put("descripcion", jsonObject.getString("descripcion"));
+                datosProductos.put("marca", jsonObject.getString("marca"));
+                datosProductos.put("presentacion", jsonObject.getString("presentacion"));
+                datosProductos.put("precio", jsonObject.getString("precio"));
+                datosProductos.put("foto", jsonObject.getString("foto"));
+
+                alproductos.add(misProductos);
+                enviarDatosServidor objEnviarDatos = new enviarDatosServidor(this);
+                String respuesta = objEnviarDatos.execute(datosProductos.toString(), "POST", utilidades.url_mto).get();
+            }
+            db = new DB(this);
+            String res =   db.administrarActualizados("modificar", "falso");
+            mostrarMsg(res + " Datos actualizados con exito");
+            listarDatos();
+        } catch (Exception e) {
+            mostrarMsg("Error: 10" + e.getMessage());
+        }
+
+    }
+
+    public void datosNube(){
+
+    }
+
+
 }

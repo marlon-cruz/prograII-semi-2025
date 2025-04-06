@@ -9,6 +9,8 @@ public class DB extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "productos";
     private static final int DATABASE_VERSION = 1;
     private static final String SQLdb = "CREATE TABLE productos (idProducto TEXT, codigo TEXT, descripcion TEXT, marca TEXT, presentacion TEXT,precio TEXT, urlFoto TEXT)";
+    private static final String SQLdb1 = "CREATE TABLE actualizado (id TEX,actualizado TEXT)";
+    private static final String incercion = "INSERT INTO actualizado (id,actualizado) VALUES ('0','0')";
     public DB(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -16,6 +18,8 @@ public class DB extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQLdb);
+        db.execSQL(SQLdb1);
+        db.execSQL(incercion);
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -35,6 +39,9 @@ public class DB extends SQLiteOpenHelper {
                 case "eliminar":
                     sql = "DELETE FROM productos WHERE idProducto = " + '"'+ datos[0] + '"';
                     break;
+                case "eliminarTodo":
+                    sql = "DELETE FROM productos";
+                    break;
             }
 
             
@@ -48,7 +55,31 @@ public class DB extends SQLiteOpenHelper {
         }
     }
 
+    public String administrarActualizados(String mod,String datos) {
+        try {
+            SQLiteDatabase db = getWritableDatabase();
+            String mensaje = "ok", sql = "";
+            switch (mod) {
+                case "modificar":
+                    sql = "UPDATE actualizado SET actualizado = '"+datos+"' WHERE id = '0'";
+                    break;
+            }
 
+
+            db.execSQL(sql);
+            db.close();
+
+
+            return mensaje;
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+
+    }
+    public Cursor lista_productosActializados() {
+        SQLiteDatabase db = getReadableDatabase();
+        return db.rawQuery("SELECT * FROM actualizado", null);
+    }
 
     public Cursor lista_productos() {
         SQLiteDatabase db = getReadableDatabase();
