@@ -229,9 +229,10 @@ public class lista_productos extends Activity {
                 for (int i = 0; i < jsonArray.length(); i++) {
 
                     if (respuesta){
-                        jsonObject = jsonArray.getJSONObject(i);
-                    }else {
                         jsonObject = jsonArray.getJSONObject(i).getJSONObject("value");
+                    }else {
+
+                        jsonObject = jsonArray.getJSONObject(i);
                     }
 
 
