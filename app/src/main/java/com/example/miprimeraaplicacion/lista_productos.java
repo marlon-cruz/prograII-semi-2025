@@ -252,9 +252,21 @@ public class lista_productos extends Activity {
 
                 boolean respuesta = di.hayConexionInternet();
 
+                boolean results = true;
+                cproductosAuxiliar = db.lista_productosActializados();
+                if (cproductosAuxiliar.moveToFirst()) {
+
+
+                    String verdadero = "verdadero";
+                    if (Objects.equals(cproductosAuxiliar.getString(1), verdadero)) {
+                        results = false;
+                    }
+                }
+
+
                 for (int i = 0; i < jsonArray.length(); i++) {
 
-                    if (respuesta){
+                    if (respuesta && results) {
                         jsonObject = jsonArray.getJSONObject(i).getJSONObject("value");
                     }else {
 
