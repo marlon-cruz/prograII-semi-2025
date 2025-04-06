@@ -197,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }else{
              String res =   db.administrarActualizados("modificar", "verdadero");
-             mostrarMsg("en sin conexion estamos" + res);
+
             }
             String[] datos = {idProducto, codigo, descripcion, marca, presentacion, precio, urlCompletaFoto};
            String respuesta = db.administrar_productos(accion, datos);

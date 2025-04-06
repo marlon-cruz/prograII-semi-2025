@@ -334,7 +334,7 @@ public class lista_productos extends Activity {
                         builder.setTitle("Datos no guardados");
                         builder.setMessage("¿Reestablecer datos?");
                         builder.setPositiveButton("Usar datos del dispositivo", (dialogInterface, i) -> datosDispositivo());
-                        builder.setNegativeButton("Usar datos del gurdados", (dialogInterface, i) -> datosNube());
+                        builder.setNegativeButton("Usar datos de gurdados en la nube", (dialogInterface, i) -> datosNube());
                         builder.show();
                     }
                 }
@@ -386,6 +386,32 @@ public class lista_productos extends Activity {
     }
 
     public void datosNube(){
+        try{
+            db = new DB(this);
+            String[] datos1 = {};
+            String respuesta1 = db.administrar_productos("eliminarTodo", datos1);
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+                jsonObject = jsonArray.getJSONObject(i).getJSONObject("value");
+
+             String idProducto = jsonObject.getString("idProducto");
+             String codigo = jsonObject.getString("codigo");
+             String descripcion = jsonObject.getString("descripcion");
+             String marca = jsonObject.getString("marca");
+             String presentacion = jsonObject.getString("presentacion");
+             String precio = jsonObject.getString("precio");
+             String foto = jsonObject.getString("foto");
+
+                String[] datos = {idProducto, codigo, descripcion, marca, presentacion, precio, foto};
+                String respuesta = db.administrar_productos("nuevo", datos);
+            }
+            db = new DB(this);
+            String res =   db.administrarActualizados("modificar", "falso");
+            mostrarMsg(res + " Datos actualizados con exito");
+            listarDatos();
+        } catch (Exception e) {
+            mostrarMsg("Error: 10" + e.getMessage());
+        }
 
     }
 
