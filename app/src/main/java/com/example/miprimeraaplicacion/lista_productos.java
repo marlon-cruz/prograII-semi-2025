@@ -53,7 +53,7 @@ public class lista_productos extends Activity {
 
         fab = findViewById(R.id.fabAgregarProductos);
         fab.setOnClickListener(view -> abriVentana());
-
+        listarDatos();
         DatosLocalRemoto();
 
         datosNube();
@@ -135,28 +135,36 @@ public class lista_productos extends Activity {
 
                         String _id = jsonArray.getJSONObject(posicion).getJSONObject("value").getString("_id");
                         String _rev = jsonArray.getJSONObject(posicion).getJSONObject("value").getString("_rev");
+
                         String url = utilidades.url_mto + "/" + _id + "?rev=" + _rev;
                         enviarDatosServidor objEnviarDatosServidor = new enviarDatosServidor(this);
                         String respuesta = objEnviarDatosServidor.execute(datosproductos.toString(), "DELETE", url).get();
                         JSONObject respuestaJSON = new JSONObject(respuesta);
-                        if (respuestaJSON.getBoolean("ok")) {
+
+                        String respuestalocal = db.administrar_productos("eliminar", new String[]{jsonArray.getJSONObject(posicion).getJSONObject("value").getString("idProducto")});
+
+                        if (respuestaJSON.getBoolean("ok") && respuestalocal.equals("ok")) {
                             listarDatos();
-                            mostrarMsg("Registro eliminado con exito remota");
+                            mostrarMsg("Registro eliminado con exito");
                         } else {
                             mostrarMsg("Error:  3" + respuesta);
                         }
                     } else {
                         db.administrarActualizados("modificar", "verdadero", jsonArray.getJSONObject(posicion).getString("idProducto"));
+
+                        String respuestalocal = db.administrar_productos("eliminar", new String[]{jsonArray.getJSONObject(posicion).getJSONObject("value").getString("idProducto")});
+
+                        if ( respuestalocal.equals("ok")) {
+                            listarDatos();
+                            mostrarMsg("Registro eliminado con exito");
+                        } else {
+                            mostrarMsg("Error:  3" + respuestalocal);
+                        }
+
                     }
 
-                    String respuesta = db.administrar_productos("eliminar", new String[]{jsonArray.getJSONObject(posicion).getString("idProducto")});
 
-                    if (respuesta.equals("ok")) {
-                        obtenerDatosproductos();
-                        mostrarMsg("Registro eliminado con exito local");
-                    } else {
-                        mostrarMsg("Error:  4" + respuesta);
-                    }
+                    listarDatos();
                 } catch (Exception e) {
                     mostrarMsg("Error:  5" + e.getMessage());
                 }
@@ -412,40 +420,50 @@ public class lista_productos extends Activity {
             mostrarMsg(res + " Datos actualizados con exito");
             listarDatos();
         } catch (Exception e) {
-            mostrarMsg("Error: 10" + e.getMessage());
+            mostrarMsg("Error: 101" + e.getMessage());
         }
 
     }
 
     public void datosNube(){
         try{
-            db = new DB(this);
+            di = new detectarInternet(this);
+            if(di.hayConexionInternet()){
+                db = new DB(this);
+                obtenerDatosproductosmod();
 
+                datosServidor = new obtenerDatosServidor();
+                String respuestaServido = datosServidor.execute().get();
 
-            obtenerDatosproductosmod();
+                jsonObject = new JSONObject(respuestaServido);
+                jsonArray = jsonObject.getJSONArray("rows");
 
-            for (int i = 0; i < jsonArray.length(); i++) {
-                jsonObject = jsonArray.getJSONObject(i).getJSONObject("value");
+                for (int i = 0; i < jsonArray.length(); i++) {
 
-                String idProducto = jsonObject.getString("idProducto");
-                String codigo = jsonObject.getString("codigo");
-                String descripcion = jsonObject.getString("descripcion");
-                String marca = jsonObject.getString("marca");
-                String presentacion = jsonObject.getString("presentacion");
-                String precio = jsonObject.getString("precio");
-                String foto = jsonObject.getString("foto");
-                String foto1 = jsonObject.getString("foto1");
-                String foto2 = jsonObject.getString("foto2");
+                    String idProducto = jsonArray.getJSONObject(i).getJSONObject("value").getString("idProducto");
 
-                for (int index = 0; index < jsonArrayAuxiliar.length(); index++) {
-                    jsonObjectAuxiliar = jsonArrayAuxiliar.getJSONObject(index);
-                    if (jsonObject.getString("idProducto") != jsonObjectAuxiliar.getString("idProducto")){
-                        String[] datos = {idProducto, codigo, descripcion, marca, presentacion, precio, foto,foto1,foto2};
-                        String respuesta = db.administrar_productos("nuevo", datos);
+                    String codigo = jsonArray.getJSONObject(i).getJSONObject("value").getString("codigo");
+                    String descripcion = jsonArray.getJSONObject(i).getJSONObject("value").getString("descripcion");
+                    String marca = jsonArray.getJSONObject(i).getJSONObject("value").getString("marca");
+                    String presentacion = jsonArray.getJSONObject(i).getJSONObject("value").getString("presentacion");
+                    String precio = jsonArray.getJSONObject(i).getJSONObject("value").getString("precio");
+                    String foto = jsonArray.getJSONObject(i).getJSONObject("value").getString("foto");
+                    String foto1 = jsonArray.getJSONObject(i).getJSONObject("value").getString("foto1");
+                    String foto2 = jsonArray.getJSONObject(i).getJSONObject("value").getString("foto2");
+
+                    for (int index = 0; index < jsonArrayAuxiliar.length()-1; index++) {
+                        jsonObjectAuxiliar = jsonArrayAuxiliar.getJSONObject(index);
+
+                        if (jsonArray.getJSONObject(i).getJSONObject("value").getString("id") != jsonObjectAuxiliar.getString("idProducto")){
+                            String[] datos = {idProducto, codigo, descripcion, marca, presentacion, precio, foto,foto1,foto2};
+                            String respuesta = db.administrar_productos("nuevo", datos);
+                        }
                     }
-                }
 
+                }
             }
+
+
         } catch (Exception e) {
             mostrarMsg("Error: 10" + e.getMessage());
         }
