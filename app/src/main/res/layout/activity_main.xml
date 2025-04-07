@@ -129,7 +129,32 @@
         android:layout_marginTop="71dp"
         android:layout_centerHorizontal="true"
         android:src="@mipmap/ic_launcher_round" />
+    <Button
+        android:id="@+id/btnAtras"
+        android:layout_width="110dp"
+        android:layout_height="40dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="305dp"
+        android:text="Atras" />
 
+    <Button
+        android:id="@+id/btnAdelante"
+        android:layout_width="110dp"
+        android:layout_height="40dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="305dp"
+        android:layout_marginEnd="5dp"
+        android:text="Adelante" />
+    <TextView
+        android:id="@+id/lblPosicion"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="390dp"
+        android:text="1 de 3"
+        android:textAlignment="center"
+        android:textColor="@color/textoEncabezado" />
     <Button
         android:id="@+id/btnGuardarProducto"
         android:layout_width="200dp"

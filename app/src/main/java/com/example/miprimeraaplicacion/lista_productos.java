@@ -53,8 +53,11 @@ public class lista_productos extends Activity {
 
         fab = findViewById(R.id.fabAgregarProductos);
         fab.setOnClickListener(view -> abriVentana());
+
         DatosLocalRemoto();
+
         listarDatos();
+
         buscarproductos();
     }
 
@@ -212,6 +215,8 @@ public class lista_productos extends Activity {
     private void obtenerDatosproductos() {
         try {
             cproductos = db.lista_productos();
+
+            mostrarMsg(cproductos.toString());
             if (cproductos.moveToFirst()) {
                 jsonArray = new JSONArray();
                 do {
@@ -223,6 +228,10 @@ public class lista_productos extends Activity {
                     jsonObject.put("presentacion", cproductos.getString(4));
                     jsonObject.put("precio", cproductos.getString(5));
                     jsonObject.put("foto", cproductos.getString(6));
+
+                   mostrarMsg(cproductos.getString(7));
+                    jsonObject.put("foto1", cproductos.getString(7));
+                    jsonObject.put("foto2", cproductos.getString(8));
 
                     jsonArray.put(jsonObject);
                 } while (cproductos.moveToNext());
@@ -253,11 +262,13 @@ public class lista_productos extends Activity {
                 boolean respuesta = di.hayConexionInternet();
 
                 boolean results = true;
+
                 cproductosAuxiliar = db.lista_productosActializados();
                 if (cproductosAuxiliar.moveToFirst()) {
 
 
                     String verdadero = "verdadero";
+                mostrarMsg(cproductosAuxiliar.getString(1));
                     if (Objects.equals(cproductosAuxiliar.getString(1), verdadero)) {
                         results = false;
                     }
@@ -281,7 +292,10 @@ public class lista_productos extends Activity {
                             jsonObject.getString("marca"),
                             jsonObject.getString("presentacion"),
                             jsonObject.getString("precio"),
-                            jsonObject.getString("foto")
+                            jsonObject.getString("foto"),
+                            jsonObject.getString("foto1"),
+                            jsonObject.getString("foto2")
+
                     );
                     alproductos.add(misProductos);
 
@@ -382,6 +396,8 @@ public class lista_productos extends Activity {
                 datosProductos.put("presentacion", jsonObject.getString("presentacion"));
                 datosProductos.put("precio", jsonObject.getString("precio"));
                 datosProductos.put("foto", jsonObject.getString("foto"));
+                datosProductos.put("foto1", jsonObject.getString("foto1"));
+                datosProductos.put("foto2", jsonObject.getString("foto2"));
 
                 alproductos.add(misProductos);
                 enviarDatosServidor objEnviarDatos = new enviarDatosServidor(this);
@@ -413,8 +429,10 @@ public class lista_productos extends Activity {
              String presentacion = jsonObject.getString("presentacion");
              String precio = jsonObject.getString("precio");
              String foto = jsonObject.getString("foto");
+             String foto1 = jsonObject.getString("foto1");
+             String foto2 = jsonObject.getString("foto2");
 
-                String[] datos = {idProducto, codigo, descripcion, marca, presentacion, precio, foto};
+                String[] datos = {idProducto, codigo, descripcion, marca, presentacion, precio, foto,foto1,foto2};
                 String respuesta = db.administrar_productos("nuevo", datos);
             }
             db = new DB(this);

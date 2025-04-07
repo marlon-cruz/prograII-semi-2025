@@ -8,6 +8,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,9 +32,16 @@ public class MainActivity extends AppCompatActivity {
     String accion = "nuevo", idProducto = "", id="", rev="";
     ImageView img;
     String urlCompletaFoto = "";
+    String urlCompletaFoto1 = "";
+    String urlCompletaFoto2 = "";
     Intent tomarFotoIntent;
     utilidades utls;
     detectarInternet di;
+    int posicionImg = 0;
+    Button btnSiguiente;
+    Button btnAnterior;
+    TextView txtPosition;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,9 +56,59 @@ public class MainActivity extends AppCompatActivity {
         fab = findViewById(R.id.fabListaProductos);
         fab.setOnClickListener(view->abrirVentana());
 
+        btnAnterior = findViewById(R.id.btnAtras);
+        btnAnterior.setOnClickListener(view -> anteriorClick());
+
+       btnSiguiente = findViewById(R.id.btnAdelante);
+       btnSiguiente.setOnClickListener(view -> siguienteClick());
+
+       txtPosition = findViewById(R.id.lblPosicion);
+
         mostrarDatos();
         tomarFoto();
     }
+
+    private void siguienteClick(){
+        if (posicionImg < 2) {
+
+            posicionImg++;
+            txtPosition.setText(posicionImg+1 + " de 3");
+
+            switch (posicionImg) {
+                case 0:
+                    img.setImageURI(Uri.parse(urlCompletaFoto));
+                    break;
+                case 1:
+                    img.setImageURI(Uri.parse(urlCompletaFoto1));
+                    break;
+                case 2:
+                    img.setImageURI(Uri.parse(urlCompletaFoto2));
+                    break;
+            }
+        }else {
+            mostrarMsg("No hay mas fotos");
+        }
+    }
+    private void anteriorClick(){
+        if (posicionImg > 0) {
+            posicionImg--;
+            txtPosition.setText(posicionImg+1 + " de 3");
+            switch (posicionImg) {
+                case 0:
+                    img.setImageURI(Uri.parse(urlCompletaFoto));
+                    break;
+                case 1:
+                    img.setImageURI(Uri.parse(urlCompletaFoto1));
+                    break;
+                case 2:
+                    img.setImageURI(Uri.parse(urlCompletaFoto2));
+                    break;
+            }
+        }else {
+            mostrarMsg("No hay mas fotos");
+        }
+    }
+
     private void mostrarDatos(){
         try {
             Bundle parametros = getIntent().getExtras();
@@ -84,6 +142,8 @@ public class MainActivity extends AppCompatActivity {
                 tempVal.setText(datos.getString("precio"));
 
                 urlCompletaFoto = datos.getString("foto");
+                urlCompletaFoto1 = datos.getString("foto1");
+                urlCompletaFoto2 = datos.getString("foto2");
                 img.setImageURI(Uri.parse(urlCompletaFoto));
             }else {
                 idProducto = utls.generarUnicoId();
@@ -95,12 +155,12 @@ public class MainActivity extends AppCompatActivity {
     private void tomarFoto(){
         img.setOnClickListener(view->{
             tomarFotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            File fotoAmigo = null;
+            File fotoProducto = null;
             try{
-                fotoAmigo = crearImagenAmigo();
-                if( fotoAmigo!=null ){
+                fotoProducto = crearImagenAmigo();
+                if( fotoProducto!=null ){
                     Uri uriFotoAimgo = FileProvider.getUriForFile(MainActivity.this,
-                            "com.example.miprimeraaplicacion.fileprovider", fotoAmigo);
+                            "com.example.miprimeraaplicacion.fileprovider", fotoProducto);
                     tomarFotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, uriFotoAimgo);
                     startActivityForResult(tomarFotoIntent, 1);
                 }else{
@@ -118,7 +178,17 @@ public class MainActivity extends AppCompatActivity {
         try{
             if( requestCode==1 && resultCode==RESULT_OK ){
                 //Bitmap imagenBitmap = BitmapFactory.decodeFile(urlCompletaFoto);
-                img.setImageURI(Uri.parse(urlCompletaFoto));
+                switch (posicionImg) {
+                    case 0:
+                        img.setImageURI(Uri.parse(urlCompletaFoto));
+                        break;
+                    case 1:
+                        img.setImageURI(Uri.parse(urlCompletaFoto1));
+                        break;
+                    case 2:
+                        img.setImageURI(Uri.parse(urlCompletaFoto2));
+                        break;
+                }
             }else{
                 mostrarMsg("No se tomo la foto.");
             }
@@ -135,7 +205,21 @@ public class MainActivity extends AppCompatActivity {
             dirAlmacenamiento.mkdir();
         }
         File image = File.createTempFile(fileName, ".jpg", dirAlmacenamiento);
-        urlCompletaFoto = image.getAbsolutePath();
+        switch (posicionImg) {
+            case 0:
+                urlCompletaFoto = image.getAbsolutePath();
+                break;
+            case 1:
+                urlCompletaFoto1 = image.getAbsolutePath();
+                break;
+            case 2:
+                urlCompletaFoto2 = image.getAbsolutePath();
+                break;
+        }
+          
+        
+
+       
         return image;
     }
     private void mostrarMsg(String msg){
@@ -181,6 +265,8 @@ public class MainActivity extends AppCompatActivity {
             datosProductos.put("presentacion", presentacion);
             datosProductos.put("precio", precio);
             datosProductos.put("foto", urlCompletaFoto);
+            datosProductos.put("foto1", urlCompletaFoto1);
+            datosProductos.put("foto2", urlCompletaFoto2);
 
             di = new detectarInternet(this);
             if(di.hayConexionInternet()) {//online
@@ -199,7 +285,7 @@ public class MainActivity extends AppCompatActivity {
              String res =   db.administrarActualizados("modificar", "verdadero");
 
             }
-            String[] datos = {idProducto, codigo, descripcion, marca, presentacion, precio, urlCompletaFoto};
+            String[] datos = {idProducto, codigo, descripcion, marca, presentacion, precio, urlCompletaFoto, urlCompletaFoto1, urlCompletaFoto2};
            String respuesta = db.administrar_productos(accion, datos);
 
             Toast.makeText(getApplicationContext(), "estado de registro ." + respuesta, Toast.LENGTH_LONG).show();
