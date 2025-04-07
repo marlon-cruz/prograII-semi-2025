@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DB extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "productos";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
     private static final String SQLdb = "CREATE TABLE productos (idProducto TEXT, codigo TEXT, descripcion TEXT, marca TEXT, presentacion TEXT,precio TEXT, urlFoto TEXT)";
     public DB(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -19,7 +19,7 @@ public class DB extends SQLiteOpenHelper {
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < 3) { // Asumiendo que la versión actual es 1 y quieres actualizar a la versión 2
+        if (oldVersion < 4) { // Asumiendo que la versión actual es 1 y quieres actualizar a la versión 2
             // Agregar la primera columna
             db.execSQL("ALTER TABLE productos ADD COLUMN urlFoto1 TEXT ;");
 
@@ -62,13 +62,19 @@ public class DB extends SQLiteOpenHelper {
         }
     }
 
-    public String administrarActualizados(String mod,String datos) {
+    public String administrarActualizados(String mod,String datos, String idProducto) {
         try {
             SQLiteDatabase db = getWritableDatabase();
             String mensaje = "ok", sql = "";
             switch (mod) {
                 case "modificar":
                     sql = "UPDATE actualizado SET actualizado = '"+datos+"' WHERE id = '0'";
+                    break;
+                case "nuevo":
+                    sql = "INSERT INTO actualizado (id, actualizado) VALUES ('"+idProducto+"'+'"+datos+"')";
+                    break;
+                case "eliminar":
+                    sql = "DELETE FROM actualizado WHERE id != '0'";
                     break;
             }
 

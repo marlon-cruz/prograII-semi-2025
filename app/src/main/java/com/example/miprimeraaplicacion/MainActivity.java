@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
         mostrarDatos();
         tomarFoto();
+
     }
 
     private void siguienteClick(){
@@ -282,7 +283,8 @@ public class MainActivity extends AppCompatActivity {
                     mostrarMsg("Error: "+respuestaJSON.getString("msg"));
                 }
             }else{
-             String res =   db.administrarActualizados("modificar", "verdadero");
+             String res =   db.administrarActualizados("modificar", "verdadero",idProducto);
+             String res1 =   db.administrarActualizados("nuevo", "verdadero",idProducto);
 
             }
             String[] datos = {idProducto, codigo, descripcion, marca, presentacion, precio, urlCompletaFoto, urlCompletaFoto1, urlCompletaFoto2};
