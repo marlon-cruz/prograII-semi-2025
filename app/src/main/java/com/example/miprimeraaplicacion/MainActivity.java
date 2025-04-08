@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
        btnSiguiente.setOnClickListener(view -> siguienteClick());
 
        txtPosition = findViewById(R.id.lblPosicion);
-
+        posicionImg = 0;
         mostrarDatos();
         tomarFoto();
 
