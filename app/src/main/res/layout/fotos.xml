@@ -107,5 +107,58 @@
         android:layout_marginTop="70dp"
         android:text="2.00"
         android:textColor="@color/textoBase" />
+    <TextView
+        android:id="@+id/lblCosto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="230dp"
+        android:layout_marginTop="50dp"
+        android:text="costo $:"
+        android:textColor="@color/textoEncabezado" />
+
+    <TextView
+        android:id="@+id/lblCostoAdaptador"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="230dp"
+        android:layout_marginTop="70dp"
+        android:text="2.00"
+        android:textColor="@color/textoBase" />
+
+    <TextView
+        android:id="@+id/lblGanancia"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="90dp"
+        android:text="Ganancia $:"
+        android:textColor="@color/textoEncabezado" />
+
+    <TextView
+        android:id="@+id/lblGananciaAdaptador"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="120dp"
+        android:text="2.00"
+        android:textColor="@color/textoBase" />
+
+    <TextView
+        android:id="@+id/lblStock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="200dp"
+        android:layout_marginTop="100dp"
+        android:text="Stock:"
+        android:textColor="@color/textoEncabezado" />
+
+    <TextView
+        android:id="@+id/lblStockAdaptador"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="200dp"
+        android:layout_marginTop="120dp"
+        android:text="2.00"
+        android:textColor="@color/textoBase" />
 
 </RelativeLayout>

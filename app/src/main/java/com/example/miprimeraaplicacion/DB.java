@@ -6,9 +6,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 
 public class DB extends SQLiteOpenHelper {
-    private static final String DATABASE_NAME = "productos";
-    private static final int DATABASE_VERSION = 4;
-    private static final String SQLdb = "CREATE TABLE productos (idProducto TEXT, codigo TEXT, descripcion TEXT, marca TEXT, presentacion TEXT,precio TEXT, urlFoto TEXT)";
+    private static final String DATABASE_NAME = "kevin";
+    private static final int DATABASE_VERSION = 3;
+    private static final String SQLdb = "CREATE TABLE productos (idProducto TEXT, codigo TEXT, descripcion TEXT, marca TEXT, presentacion TEXT,precio TEXT, urlFoto TEXT,costo TEXT,stock TEXT)";
     public DB(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -19,7 +19,7 @@ public class DB extends SQLiteOpenHelper {
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < 4) { // Asumiendo que la versión actual es 1 y quieres actualizar a la versión 2
+        if (oldVersion < 3) { // Asumiendo que la versión actual es 1 y quieres actualizar a la versión 2
             // Agregar la primera columna
             db.execSQL("ALTER TABLE productos ADD COLUMN urlFoto1 TEXT ;");
 
@@ -38,10 +38,10 @@ public class DB extends SQLiteOpenHelper {
             String mensaje = "ok", sql = "";
             switch (accion) {
                 case "nuevo":
-                    sql = "INSERT INTO productos (idProducto,codigo, descripcion, marca, presentacion, precio, urlFoto,urlFoto1,urlFoto2) VALUES ('"+ datos[0] +"','"+ datos[1] +"', '" + datos[2] + "', '" + datos[3] + "', '" + datos[4] + "', '" + datos[5] + "', '" + datos[6] + "', '" + datos[7] + "', '" + datos[8] + "')";
+                    sql = "INSERT INTO productos (idProducto,codigo, descripcion, marca, presentacion, precio, urlFoto,costo,stock,urlFoto1,urlFoto2) VALUES ('"+ datos[0] +"','"+ datos[1] +"', '" + datos[2] + "', '" + datos[3] + "', '" + datos[4] + "', '" + datos[5] + "', '" + datos[6] + "', '" + datos[7] + "', '" + datos[8]  + "', '" + datos[9] + "', '" + datos[10] + "')";
                     break;
                 case "modificar":
-                    sql = "UPDATE productos SET codigo = '" + datos[1] + "', descripcion = '" + datos[2] + "', marca = '" + datos[3] + "', presentacion = '" + datos[4] + "', precio = '" + datos[5] + "', urlFoto = '" + datos[6] + "', urlFoto = '" + datos[7] + "', urlFoto2 = '" + datos[8] + "' WHERE idProducto = " + '"'+ datos[0] + '"';
+                    sql = "UPDATE productos SET codigo = '" + datos[1] + "', descripcion = '" + datos[2] + "', marca = '" + datos[3] + "', presentacion = '" + datos[4] + "', precio = '" + datos[5] + "', urlFoto = '" + datos[6] + "', costo = '" + datos[7] + "' stock = '" + datos[8] + "', urlFoto1 = '" + datos[9]  +"', urlFoto2 = '" + datos[10] + "' WHERE idProducto = " + '"'+ datos[0] + '"';
                     break;
                 case "eliminar":
                     sql = "DELETE FROM productos WHERE idProducto = " + '"'+ datos[0] + '"';
