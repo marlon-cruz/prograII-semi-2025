@@ -22,10 +22,11 @@ public class productos {
         this.presentacion = presentacion;
         this.precio = precio;
         this.foto = foto;
-        this.foto1 = foto1;
-        this.foto2 = foto2;
         this.costo = costo;
         this.stock = stock;
+        this.foto1 = foto1;
+        this.foto2 = foto2;
+
     }
 
     public String getStock() {
@@ -96,15 +97,15 @@ public class productos {
         return foto1;
     }
 
-    public void setFoto1(String foto) {
-        this.foto1 = foto;
+    public void setFoto1(String foto1) {
+        this.foto1 = foto1;
     }
     public String getFoto2() {
         return foto2;
     }
 
-    public void setFoto2(String foto) {
-        this.foto2 = foto;
+    public void setFoto2(String foto2) {
+        this.foto2 = foto2;
     }
     public String getCosto() {
         return costo;

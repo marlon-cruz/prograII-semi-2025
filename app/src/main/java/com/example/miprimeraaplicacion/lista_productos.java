@@ -234,12 +234,11 @@ public class lista_productos extends Activity {
                     jsonObject.put("presentacion", cproductos.getString(4));
                     jsonObject.put("precio", cproductos.getString(5));
                     jsonObject.put("foto", cproductos.getString(6));
+                    jsonObject.put("costo", cproductos.getString(7));
+                    jsonObject.put("stock", cproductos.getString(8));
+                    jsonObject.put("foto1", cproductos.getString(9));
+                    jsonObject.put("foto2", cproductos.getString(10));
 
-
-                    jsonObject.put("foto1", cproductos.getString(7));
-                    jsonObject.put("foto2", cproductos.getString(8));
-                    jsonObject.put("costo", cproductos.getString(9));
-                    jsonObject.put("stock", cproductos.getString(10));
 
                     jsonArray.put(jsonObject);
                 } while (cproductos.moveToNext());
@@ -284,11 +283,13 @@ public class lista_productos extends Activity {
 
                 for (int i = 0; i < jsonArray.length(); i++) {
 
-                    if (respuesta && results) {
+                    if (respuesta) {
                         jsonObject = jsonArray.getJSONObject(i).getJSONObject("value");
-                    } else {
 
+
+                    } else {
                         jsonObject = jsonArray.getJSONObject(i);
+
                     }
 
 
@@ -300,10 +301,11 @@ public class lista_productos extends Activity {
                             jsonObject.getString("presentacion"),
                             jsonObject.getString("precio"),
                             jsonObject.getString("foto"),
-                            jsonObject.getString("costo"),
-                            jsonObject.getString("stock"),
                             jsonObject.getString("foto1"),
-                            jsonObject.getString("foto2")
+                            jsonObject.getString("foto2"),
+                            jsonObject.getString("costo"),
+                            jsonObject.getString("stock")
+
 
                     );
                     alproductos.add(misProductos);

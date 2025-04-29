@@ -142,6 +142,12 @@ public class MainActivity extends AppCompatActivity {
                 tempVal = findViewById(R.id.txtPrecio);
                 tempVal.setText(datos.getString("precio"));
 
+                tempVal = findViewById(R.id.txtCosto);
+                tempVal.setText(datos.getString("costo"));
+
+                tempVal = findViewById(R.id.txtStock);
+                tempVal.setText(datos.getString("stock"));
+
                 urlCompletaFoto = datos.getString("foto");
                 urlCompletaFoto1 = datos.getString("foto1");
                 urlCompletaFoto2 = datos.getString("foto2");
@@ -288,7 +294,7 @@ public class MainActivity extends AppCompatActivity {
                     id = respuestaJSON.getString("id");
                     rev = respuestaJSON.getString("rev");
                 }else{
-                    mostrarMsg("Error: "+respuestaJSON.getString("msg"));
+                    mostrarMsg("Error: a2 "+respuestaJSON.getString("msg"));
                 }
             }else{
              String res =   db.administrarActualizados("modificar", "verdadero",idProducto);
@@ -301,7 +307,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "estado de registro ." + respuesta, Toast.LENGTH_LONG).show();
             abrirVentana();
         }catch (Exception e){
-            mostrarMsg("Error: "+e.getMessage());
+            mostrarMsg("Error: a1 "+e.getMessage());
         }
     }
 }

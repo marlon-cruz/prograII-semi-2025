@@ -14,23 +14,23 @@ import java.util.ArrayList;
 
 public class AdaptadorProductos extends BaseAdapter {
     Context context;
-    ArrayList<productos> alAmigos;
+    ArrayList<productos> alProductos;
     productos misProductos;
     LayoutInflater inflater;
 
-    public AdaptadorProductos(Context context, ArrayList<productos> alAmigos) {
+    public AdaptadorProductos(Context context, ArrayList<productos> alProductos) {
         this.context = context;
-        this.alAmigos = alAmigos;
+        this.alProductos = alProductos;
     }
 
     @Override
     public int getCount() {
-        return alAmigos.size();
+        return alProductos.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return alAmigos.get(position);
+        return alProductos.get(position);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class AdaptadorProductos extends BaseAdapter {
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View itemView = inflater.inflate(R.layout.fotos, parent, false);
         try {
-            misProductos = alAmigos.get(position);
+            misProductos = alProductos.get(position);
 
             TextView tempVal = itemView.findViewById(R.id.lblcodigoAdaptador);
             tempVal.setText(misProductos.getcodigo());
@@ -61,10 +61,11 @@ public class AdaptadorProductos extends BaseAdapter {
             tempVal.setText(misProductos.getpresentacion());
 
             tempVal = itemView.findViewById(R.id.lblCostoAdaptador);
-            tempVal.setText(misProductos.getCosto());
+
+            tempVal.setText(misProductos.getCosto().toString() + " $");
 
             tempVal = itemView.findViewById(R.id.lblStockAdaptador);
-            tempVal.setText(misProductos.getStock());
+            tempVal.setText(misProductos.getStock() + " unidades");
 
             tempVal = itemView.findViewById(R.id.lblGananciaAdaptador);
             String ganancia = String.valueOf(Double.parseDouble(misProductos.getprecio()) - Double.parseDouble(misProductos.getCosto()));
@@ -74,7 +75,7 @@ public class AdaptadorProductos extends BaseAdapter {
             Bitmap bitmap = BitmapFactory.decodeFile(misProductos.getFoto());
             img.setImageBitmap(bitmap);
         } catch (Exception e) {
-            Toast.makeText(context, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "Error: ngcc" + e.getMessage(), Toast.LENGTH_LONG).show();
         }
         return itemView;
     }

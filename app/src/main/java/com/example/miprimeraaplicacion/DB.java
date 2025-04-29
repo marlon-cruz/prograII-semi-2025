@@ -41,7 +41,7 @@ public class DB extends SQLiteOpenHelper {
                     sql = "INSERT INTO productos (idProducto,codigo, descripcion, marca, presentacion, precio, urlFoto,costo,stock,urlFoto1,urlFoto2) VALUES ('"+ datos[0] +"','"+ datos[1] +"', '" + datos[2] + "', '" + datos[3] + "', '" + datos[4] + "', '" + datos[5] + "', '" + datos[6] + "', '" + datos[7] + "', '" + datos[8]  + "', '" + datos[9] + "', '" + datos[10] + "')";
                     break;
                 case "modificar":
-                    sql = "UPDATE productos SET codigo = '" + datos[1] + "', descripcion = '" + datos[2] + "', marca = '" + datos[3] + "', presentacion = '" + datos[4] + "', precio = '" + datos[5] + "', urlFoto = '" + datos[6] + "', costo = '" + datos[7] + "' stock = '" + datos[8] + "', urlFoto1 = '" + datos[9]  +"', urlFoto2 = '" + datos[10] + "' WHERE idProducto = " + '"'+ datos[0] + '"';
+                    sql = "UPDATE productos SET codigo = '" + datos[1] + "', descripcion = '" + datos[2] + "', marca = '" + datos[3] + "', presentacion = '" + datos[4] + "', precio = '" + datos[5] + "', urlFoto = '" + datos[6] + "', costo = '" + datos[7] + "', urlFoto1 = '" + datos[9]  +"', urlFoto2 = '" + datos[10] + "' WHERE idProducto = '" + datos[0] + "'";
                     break;
                 case "eliminar":
                     sql = "DELETE FROM productos WHERE idProducto = " + '"'+ datos[0] + '"';
