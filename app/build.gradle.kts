@@ -4,13 +4,13 @@ plugins {
 }
 
 android {
-    namespace = "com.example.miprimeraaplicacion"
+    namespace = "com.alexis.petcare20"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.miprimeraaplicacion"
-        minSdk = 23
-        targetSdk = 35
+        applicationId = "com.alexis.petcare20"
+        minSdk = 24
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
