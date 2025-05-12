@@ -28,6 +28,10 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -38,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     TextView tempVal;
     String accion = "nuevo", idAmigo = "", id="", rev="";
     ImageView img;
-    String urlCompletaFoto = "";
+    String urlCompletaFoto = "", getUrlCompletaFotoFirestore = "";
     Intent tomarFotoIntent;
     detectarInternet di;
     DatabaseReference databaseReference;
@@ -51,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         obtenerToken();
         img = findViewById(R.id.imgFotoAmigo);
 
-        btn = findViewById(R.id.btnGuardarAmigo);
+        btn.setOnClickListener(view -> subirFotoFirestore());
         btn.setOnClickListener(view->guardarAmigo());
 
         fab = findViewById(R.id.fabListaAmigos);
@@ -59,6 +63,24 @@ public class MainActivity extends AppCompatActivity {
 
         mostrarDatos();
         tomarFoto();
+    }
+    private void subirFotoFirestore(){
+        mostrarMsg("Subiendo foto a firestore");
+        StorageReference reference = FirebaseStorage.getInstance().getReference();
+        Uri file = Uri.fromFile(new File(urlCompletaFoto));
+        final StorageReference fileRef = reference.child("fotosAmigos/"+file.getLastPathSegment());
+
+        final UploadTask uploadTask = fileRef.putFile(file);
+        uploadTask.addOnSuccessListener(taskSnapshot -> {
+            fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                getUrlCompletaFotoFirestore = uri.toString();
+                guardarAmigo();
+            }).addOnFailureListener(e -> {
+                mostrarMsg("Error al obtener la url de la foto: "+e.getMessage());
+            });
+        }).addOnFailureListener(e -> {
+            mostrarMsg("Error al subir la foto: "+e.getMessage());
+        });
     }
     private void obtenerToken(){
         try{
@@ -104,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
                 //idAmigo = ;
             }
         }catch (Exception e){
-            mostrarMsg("Error: "+e.getMessage());
+            mostrarMsg("Error al mostrar datos: "+e.getMessage());
         }
     }
     private void tomarFoto(){
@@ -122,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
                     mostrarMsg("Nose pudo crear la imagen.");
                 }
             }catch (Exception e){
-                mostrarMsg("Error: "+e.getMessage());
+                mostrarMsg("Error al tomar foto: "+e.getMessage());
             }
         });
     }
@@ -138,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
                 mostrarMsg("No se tomo la foto.");
             }
         }catch (Exception e){
-            mostrarMsg("Error: "+e.getMessage());
+            mostrarMsg("Error al tomar la foto: "+e.getMessage());
         }
     }
 
@@ -183,19 +205,19 @@ public class MainActivity extends AppCompatActivity {
             if( miToken.equals("") || miToken==null ){
                 obtenerToken();
             }
-            amigos amigo = new amigos(idAmigo, nombre, direccion, telefono, email, dui, urlCompletaFoto, miToken);
+            amigos amigo = new amigos(idAmigo, nombre, direccion, telefono, email, dui, urlCompletaFoto, getUrlCompletaFotoFirestore, miToken);
             if( key!= null ){
                 databaseReference.child(key).setValue(amigo).addOnSuccessListener(success->{
                     mostrarMsg("Registro guardado con exito.");
                     abrirVentana();
                 }).addOnFailureListener(failure->{
-                    mostrarMsg("Error: "+failure.getMessage());
+                    mostrarMsg("Error al registrar datos: "+failure.getMessage());
                 });
             } else {
-                mostrarMsg("Error al guardar el registro.");
+                mostrarMsg("Error al guardar en firebase.");
             }
         }catch (Exception e){
-            mostrarMsg("Error: "+e.getMessage());
+            mostrarMsg("Error guardar: "+e.getMessage());
         }
     }
 }
