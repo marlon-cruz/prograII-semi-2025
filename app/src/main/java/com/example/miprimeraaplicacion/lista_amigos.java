@@ -51,11 +51,33 @@ public class lista_amigos extends Activity {
 
         parametros.putString("accion", "nuevo");
 
+        ltsAmigos = findViewById(R.id.ltsAmigos);
+
         fab = findViewById(R.id.fabAgregarAmigo);
         fab.setOnClickListener(view -> abriVentana());
         listarDatos();
         buscarAmigos();
+        mostrarChat();
     }
+
+    private void mostrarChat() {
+        ltsAmigos.setOnItemClickListener((parent, view, position, id) -> {
+            try {
+                Bundle parametros = new Bundle();
+                parametros.putString("nombre", jsonArray.getJSONObject(position).getString("nombre"));
+                parametros.putString("to", jsonArray.getJSONObject(position).getString("to"));
+                parametros.putString("from", jsonArray.getJSONObject(position).getString("from"));
+                parametros.putString("urlCompleta", jsonArray.getJSONObject(position).getString("from"));
+                Intent intent = new Intent(this, chats.class);
+                intent.putExtras(parametros);
+                startActivity(intent);
+            } catch (Exception e) {
+                mostrarMsg("Error al abrir el chat: " + e.getMessage());
+            }
+        });
+
+    }
+
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
@@ -177,7 +199,9 @@ public class lista_amigos extends Activity {
                             jsonObject.put("email", amigo.getEmail());
                             jsonObject.put("dui", amigo.getDui());
                             jsonObject.put("urlFoto", amigo.getFoto());
-                            jsonObject.put("miToken", amigo.getMiToken());
+                            jsonObject.put("urlCompletaFotoFirestore", amigo.getUrlCompletaFotoFirestore());
+                            jsonObject.put("to", amigo.getToken());
+                            jsonObject.put("from", miToken);
 
                             jsonArray.put(jsonObject);
                         }

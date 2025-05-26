@@ -55,33 +55,33 @@ public class MainActivity extends AppCompatActivity {
         obtenerToken();
         img = findViewById(R.id.imgFotoAmigo);
 
-        btn.setOnClickListener(view -> subirFotoFirestore());
-        btn.setOnClickListener(view->guardarAmigo());
+        btn = findViewById(R.id.btnGuardarAmigo);
+        btn.setOnClickListener(view ->  guardarAmigo());
 
         fab = findViewById(R.id.fabListaAmigos);
-        fab.setOnClickListener(view->abrirVentana());
+        fab.setOnClickListener(view -> abrirVentana());
 
         mostrarDatos();
         tomarFoto();
     }
-    private void subirFotoFirestore(){
-        mostrarMsg("Subiendo foto a firestore");
-        StorageReference reference = FirebaseStorage.getInstance().getReference();
-        Uri file = Uri.fromFile(new File(urlCompletaFoto));
-        final StorageReference fileRef = reference.child("fotosAmigos/"+file.getLastPathSegment());
-
-        final UploadTask uploadTask = fileRef.putFile(file);
-        uploadTask.addOnSuccessListener(taskSnapshot -> {
-            fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                getUrlCompletaFotoFirestore = uri.toString();
-                guardarAmigo();
-            }).addOnFailureListener(e -> {
-                mostrarMsg("Error al obtener la url de la foto: "+e.getMessage());
-            });
-        }).addOnFailureListener(e -> {
-            mostrarMsg("Error al subir la foto: "+e.getMessage());
-        });
-    }
+//    private void subirFotoFirestore(){
+//        mostrarMsg("Subiendo foto a firestore");
+//        StorageReference reference = FirebaseStorage.getInstance().getReference();
+//        Uri file = Uri.fromFile(new File(urlCompletaFoto));
+//        final StorageReference fileRef = reference.child("fotosAmigos/"+file.getLastPathSegment());
+//
+//        final UploadTask uploadTask = fileRef.putFile(file);
+//        uploadTask.addOnSuccessListener(taskSnapshot -> {
+//            fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
+//                getUrlCompletaFotoFirestore = uri.toString();
+//                guardarAmigo();
+//            }).addOnFailureListener(e -> {
+//                mostrarMsg("Error al obtener la url de la foto: "+e.getMessage());
+//            });
+//        }).addOnFailureListener(e -> {
+//            mostrarMsg("Error al subir la foto: "+e.getMessage());
+//        });
+//    }
     private void obtenerToken(){
         try{
             FirebaseMessaging.getInstance().getToken().addOnCompleteListener(tarea->{
@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
                 fotoAmigo = crearImagenAmigo();
                 if( fotoAmigo!=null ){
                     Uri uriFotoAimgo = FileProvider.getUriForFile(MainActivity.this,
-                            "com.ugb.miprimeraaplicacion.fileprovider", fotoAmigo);
+                            "com.example.miprimeraaplicacion.fileprovider", fotoAmigo);
                     tomarFotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, uriFotoAimgo);
                     startActivityForResult(tomarFotoIntent, 1);
                 }else{
@@ -154,7 +154,6 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         try{
             if( requestCode==1 && resultCode==RESULT_OK ){
-                //Bitmap imagenBitmap = BitmapFactory.decodeFile(urlCompletaFoto);
                 img.setImageURI(Uri.parse(urlCompletaFoto));
             }else{
                 mostrarMsg("No se tomo la foto.");
